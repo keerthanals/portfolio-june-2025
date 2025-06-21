@@ -133,17 +133,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// //confetti
-// document.addEventListener('DOMContentLoaded', function () {
-//     setTimeout(() => {
-//         confetti({
-//             particleCount: 100,
-//             spread: 70,
-//             origin: { y: 0.6 }
-//         });
-//     }, 1200); // wait for fade-in to complete
-// });
-
+// confetti
 // Start interval-based confetti from both sides every 10 seconds
 function launchSideConfetti() {
     setInterval(() => {
@@ -169,4 +159,20 @@ function launchSideConfetti() {
 document.addEventListener('DOMContentLoaded', function () {
     launchSideConfetti();
 });
+
+//rain effect
+const projectSection = document.querySelector('#projects');
+
+window.addEventListener('scroll', function () {
+    const rect = projectSection.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom >= 0) {
+        confetti({
+            particleCount: 200,
+            spread: 160,
+            origin: { y: 0 },
+        });
+    }
+}, { once: true }); // Only once per visit
+
+
 
