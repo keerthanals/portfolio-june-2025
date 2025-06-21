@@ -132,3 +132,41 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// //confetti
+// document.addEventListener('DOMContentLoaded', function () {
+//     setTimeout(() => {
+//         confetti({
+//             particleCount: 100,
+//             spread: 70,
+//             origin: { y: 0.6 }
+//         });
+//     }, 1200); // wait for fade-in to complete
+// });
+
+// Start interval-based confetti from both sides every 10 seconds
+function launchSideConfetti() {
+    setInterval(() => {
+        // Left side burst
+        confetti({
+            particleCount: 40,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0, y: 0.6 }
+        });
+
+        // Right side burst
+        confetti({
+            particleCount: 40,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1, y: 0.6 }
+        });
+    }, 10000); // 10 seconds interval
+}
+
+// Run when DOM is ready
+document.addEventListener('DOMContentLoaded', function () {
+    launchSideConfetti();
+});
+
