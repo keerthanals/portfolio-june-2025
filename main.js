@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const linkedinBtn = document.querySelector('.btn-secondary');
     if (linkedinBtn) {
         linkedinBtn.addEventListener('click', function() {
-            window.open('https://linkedin.com', '_blank');
+            window.open('https://www.linkedin.com/in/keerthana-l-s', '_blank');
         });
     }
 
@@ -43,9 +43,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Add scroll animations
+// Add scroll animations for both project and experience cards
 function animateOnScroll() {
-    const elements = document.querySelectorAll('.project-card');
+    const elements = document.querySelectorAll('.project-card, .experience-card');
     
     elements.forEach(element => {
         const elementTop = element.getBoundingClientRect().top;
@@ -60,9 +60,9 @@ function animateOnScroll() {
 
 // Initialize animations
 document.addEventListener('DOMContentLoaded', function() {
-    // Set initial state for project cards
-    const projectCards = document.querySelectorAll('.project-card');
-    projectCards.forEach(card => {
+    // Set initial state for project and experience cards
+    const animatedCards = document.querySelectorAll('.project-card, .experience-card');
+    animatedCards.forEach(card => {
         card.style.opacity = '0';
         card.style.transform = 'translateY(30px)';
         card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
@@ -133,7 +133,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// confetti
+// Confetti effects
 // Start interval-based confetti from both sides every 10 seconds
 function launchSideConfetti() {
     setInterval(() => {
@@ -160,19 +160,115 @@ document.addEventListener('DOMContentLoaded', function () {
     launchSideConfetti();
 });
 
-//rain effect
-const projectSection = document.querySelector('#projects');
+// Rain effect for projects and experience sections
+const sectionsToConfetti = ['#projects', '#experience'];
 
-window.addEventListener('scroll', function () {
-    const rect = projectSection.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom >= 0) {
-        confetti({
-            particleCount: 200,
-            spread: 160,
-            origin: { y: 0 },
+sectionsToConfetti.forEach(sectionId => {
+    const section = document.querySelector(sectionId);
+    if (section) {
+        window.addEventListener('scroll', function () {
+            const rect = section.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom >= 0) {
+                confetti({
+                    particleCount: 100,
+                    spread: 160,
+                    origin: { y: 0 },
+                });
+            }
+        }, { once: true }); // Only once per visit per section
+    }
+});
+
+// Add smooth navigation highlighting
+function updateActiveNavLink() {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    let current = '';
+    sections.forEach(section => {
+        const sectionTop = section.getBoundingClientRect().top;
+        if (sectionTop <= 100) {
+            current = section.getAttribute('id');
+        }
+    });
+    
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+            link.classList.add('active');
+        }
+    });
+}
+
+// Add CSS for active nav link
+const navStyle = document.createElement('style');
+navStyle.textContent = `
+    .nav-link.active {
+        color: #FFC107;
+        font-weight: 600;
+    }
+`;
+document.head.appendChild(navStyle);
+
+// Listen for scroll to update active nav link
+window.addEventListener('scroll', updateActiveNavLink);
+
+// Dark/Light Mode Toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+    
+    // Check for saved theme preference or default to 'light'
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    body.setAttribute('data-theme', currentTheme);
+    
+    themeToggle.addEventListener('click', function() {
+        const currentTheme = body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Add a subtle animation to the toggle
+        themeToggle.style.transform = 'rotate(180deg)';
+        setTimeout(() => {
+            themeToggle.style.transform = 'rotate(0deg)';
+        }, 300);
+    });
+});
+
+// Contact form handling
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.querySelector('.form');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(contactForm);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const subject = formData.get('subject');
+            const message = formData.get('message');
+            
+            // Create mailto link
+            const mailtoLink = `mailto:keerthanals270405@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+            
+            // Open email client
+            window.location.href = mailtoLink;
+            
+            // Show success message (optional)
+            const submitBtn = contactForm.querySelector('.form-submit');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Message Sent!';
+            submitBtn.style.backgroundColor = '#4CAF50';
+            
+            setTimeout(() => {
+                submitBtn.textContent = originalText;
+                submitBtn.style.backgroundColor = '';
+                contactForm.reset();
+            }, 3000);
         });
     }
-}, { once: true }); // Only once per visit
-
-
-
+});
